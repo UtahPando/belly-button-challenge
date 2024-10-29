@@ -90,12 +90,6 @@ function buildCharts(sample) {
   });
 }
 
-function optionChanged(newSample) {
-  buildMetadata(newSample);
-  buildCharts(newSample);
-  buildStudentTable(); // Call this if you want to update the student table as well
-}
-
 function updatePlotly(sample) {
   d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then((data) => {
     var samples = data.samples;
@@ -116,6 +110,12 @@ function updatePlotly(sample) {
     Plotly.restyle('bar', 'y', [yticks.reverse()]);
     Plotly.restyle('bar', 'text', [otu_labels.slice(0, 10).reverse()]);
   });
+}
+
+function optionChanged(newSample) {
+  buildMetadata(newSample);
+  buildCharts(newSample);
+  buildStudentTable(); // Call this if you want to update the student table as well
 }
 
 // Function to run on page load
