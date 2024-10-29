@@ -22,6 +22,8 @@ function buildMetadata(sample) {
   });
 }
 
+
+
 // function to build both charts
 function buildCharts(sample) {
   d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then((data) => {
@@ -87,6 +89,25 @@ function buildCharts(sample) {
     Plotly.newPlot('bar', barData, barLayout);
   });
 }
+
+function updatePlotly() {
+  // Use D3 to select the dropdown menu
+  let dropdownMenu = d3.select("#selDataset");
+  // Get the value of the selected option
+  let selectedSample = dropdownMenu.property("value");
+
+  // Fetch the data for the selected sample (assuming you have a function to get the data)
+  let sampleData = getSampleData(selectedSample);
+
+  // Update the chart with the new data
+  Plotly.restyle('yourChartId', 'x', [sampleData.otu_ids]);
+  Plotly.restyle('yourChartId', 'y', [sampleData.sample_values]);
+  Plotly.restyle('yourChartId', 'marker.size', [sampleData.sample_values]);
+  Plotly.restyle('yourChartId', 'marker.color', [sampleData.otu_ids]);
+  Plotly.restyle('yourChartId', 'text', [sampleData.otu_labels]);
+}
+
+
 
 // Function to run on page load
 function init() {
