@@ -90,24 +90,33 @@ function buildCharts(sample) {
   });
 }
 
-function updatePlotly() {
-  // Use D3 to select the dropdown menu
-  let dropdownMenu = d3.select("#selDataset");
-  // Get the value of the selected option
-  let selectedSample = dropdownMenu.property("value");
-
-  // Fetch the data for the selected sample (assuming you have a function to get the data)
-  let sampleData = getSampleData(selectedSample);
-
-  // Update the chart with the new data
-  Plotly.restyle('yourChartId', 'x', [sampleData.otu_ids]);
-  Plotly.restyle('yourChartId', 'y', [sampleData.sample_values]);
-  Plotly.restyle('yourChartId', 'marker.size', [sampleData.sample_values]);
-  Plotly.restyle('yourChartId', 'marker.color', [sampleData.otu_ids]);
-  Plotly.restyle('yourChartId', 'text', [sampleData.otu_labels]);
+function optionChanged(newSample) {
+  buildMetadata(newSample);
+  buildCharts(newSample);
+  buildStudentTable(); // Call this if you want to update the student table as well
 }
 
+function updatePlotly(sample) {
+  d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then((data) => {
+    var samples = data.samples;
+    var result = samples.filter(sampleObj => sampleObj.id == sample)[0];
+    
+    var otu_ids = result.otu_ids;
+    var sample_values = result.sample_values;
+    var otu_labels = result.otu_labels;
 
+    Plotly.restyle('bubble', 'x', [otu_ids]);
+    Plotly.restyle('bubble', 'y', [sample_values]);
+    Plotly.restyle('bubble', 'marker.size', [sample_values]);
+    Plotly.restyle('bubble', 'marker.color', [otu_ids]);
+    Plotly.restyle('bubble', 'text', [otu_labels]);
+
+    var yticks = otu_ids.slice(0, 10).map(id => `OTU ${id}`);
+    Plotly.restyle('bar', 'x', [sample_values.slice(0, 10).reverse()]);
+    Plotly.restyle('bar', 'y', [yticks.reverse()]);
+    Plotly.restyle('bar', 'text', [otu_labels.slice(0, 10).reverse()]);
+  });
+}
 
 // Function to run on page load
 function init() {
